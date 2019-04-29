@@ -289,6 +289,26 @@ o = OSCFunc.trace(true);
 )
 s.meter;
 
+
+
+(
+SynthDef(\dsaf_multialarm, {
+	|length=0.05, freqs=#[600,800,600,800], timbre=1, repeats=inf, pan=0.0|
+	var freq, out, operations;
+	freq = Duty.ar(length, 0, Dseq(freqs, repeats), doneAction: 2);
+	freq = LPF.ar(freq, 70);
+	out = LeakDC.ar(SinOsc.ar(freq));
+	out = Select.ar(timbre, [out, (out * pi).sin, (out * pi).cos, ((out+0.25) * pi).cos]);
+	// NOTE: when writing a synthdef always remember the Out ugen!
+	// (Handy shortcuts like Ndef and {}.play often add Out on your behalf)
+	Out.ar(0, Pan2.ar(out * 0.1, pan))
+}).add;
+)
+
+
+
+
+
 a = Scale.dorian;
 b = Scale.locrian;
 
